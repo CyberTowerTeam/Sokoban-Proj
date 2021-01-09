@@ -51,22 +51,21 @@ def quit():
     pygame.quit()
 
 def start_menu():
-    START_BUTTON = Button(START_BUTTON_IMAGE_DEFAULT, START_BUTTON_IMAGE_ACTIVE, (10, 10), (200, 100), START_BUTTON_PRESSED)
+    START_BUTTON = Button(START_BUTTON_IMAGE_DEFAULT, START_BUTTON_IMAGE_ACTIVE, (300, 200), (160, 70), START_BUTTON_PRESSED)
     LEVEL_ONE_BUTTON = Button(LEVEL1_BUTTON_IMAGE_DEFAULT, LEVEL1_BUTTON_IMAGE_ACTIVE,
-                          (50, SCREEN_HIGHT - 80), (190, 60), LEVEL1_BUTTON_PRESSED)
+                          (530, SCREEN_HIGHT - 260), (150, 150), LEVEL1_BUTTON_PRESSED)
     LEVEL_TWO_BUTTON = Button(LEVEL2_BUTTON_IMAGE_DEFAULT, LEVEL2_BUTTON_IMAGE_ACTIVE,
-                          (305, SCREEN_HIGHT - 80), (190, 60), LEVEL2_BUTTON_PRESSED)
+                          (400, SCREEN_HIGHT - 150), (150, 150), LEVEL2_BUTTON_PRESSED)
     LEVEL_THREE_BUTTON = Button(LEVEL3_BUTTON_IMAGE_DEFAULT, LEVEL3_BUTTON_IMAGE_ACTIVE,
-                            (SCREEN_WIDHT - 245, SCREEN_HIGHT - 80), (190, 60), LEVEL3_BUTTON_PRESSED)
-    LEVEL1_SELECTED = pygame.image.load('LEVEL1_SELECTED_TEXT.png')
-    LEVEL2_SELECTED = pygame.image.load('LEVEL2_SELECTED_TEXT.png')
-    LEVEL3_SELECTED = pygame.image.load('LEVEL3_SELECTED_TEXT.png')
+                            (SCREEN_WIDHT - 150, SCREEN_HIGHT - 150), (150, 150), LEVEL3_BUTTON_PRESSED)
+    LEVEL1_SELECTED = pygame.image.load('images/LEVEL1_SELECTED_TEXT.png')
+    LEVEL2_SELECTED = pygame.image.load('images/LEVEL2_SELECTED_TEXT.png')
+    LEVEL3_SELECTED = pygame.image.load('images/LEVEL3_SELECTED_TEXT.png')
     running = True
     level_flag = 1
     while running:
         time_delta = clock.tick(60) / 1000
         screen.blit(SCREEN_BACKGROUND_IMAGE, (0, 0))
-        screen.blit(GAME_NAME, pygame.Rect((SCREEN_WIDHT - 205, 5), (200, 150)))
         #цикл обработки событий
         for event in pygame.event.get():
             manager.process_events(event)
@@ -100,9 +99,13 @@ def start_menu():
             LEVEL_THREE_BUTTON.pressed_event(event)
             if LEVEL_THREE_BUTTON.pressed_event(event) == 3:
                 level_flag = 3
-            if level_flag == 1:
-                screen.blit(LEVEL1_SELECTED, pygame.Rect((250, 30), (200, 120)))
         #отрисовка изменений
+        if level_flag == 1:
+            screen.blit(LEVEL1_SELECTED, pygame.Rect((545, 330), (130, 110)))
+        elif level_flag == 2:
+            screen.blit(LEVEL2_SELECTED, pygame.Rect((545, 330), (130, 110)))
+        elif level_flag == 3:
+            screen.blit(LEVEL3_SELECTED, pygame.Rect((545, 330), (130, 110)))
         START_BUTTON.draw(screen)
         LEVEL_ONE_BUTTON.draw(screen)
         LEVEL_TWO_BUTTON.draw(screen)
