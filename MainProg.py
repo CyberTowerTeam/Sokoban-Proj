@@ -1,6 +1,7 @@
 import pygame
+import sys
 import pygame_gui
-
+import queue
 
 from constants import *
 
@@ -33,19 +34,6 @@ class Button():
         else:
             self.btn_event = 0
             self.flag = 0
-
-
-class Level():
-    pass
-
-def level1():
-    print(111111111111111111111111)
-
-def level2():
-    print(222222222222222222222222)
-
-def level3():
-    print(333333333333333333333333)
 
 def quit():
     pygame.quit()
@@ -85,11 +73,11 @@ def start_menu():
             START_BUTTON.pressed_event(event)
             if START_BUTTON.pressed_event(event) == 0:
                 if level_flag == 1:
-                    level1()
+                    map = Map(1)
                 if level_flag == 2:
-                    level2()
+                    map = Map(2)
                 elif level_flag == 3:
-                    level3()
+                    map = Map(3)
             LEVEL_ONE_BUTTON.pressed_event(event)
             if LEVEL_ONE_BUTTON.pressed_event(event) == 1:
                 level_flag = 1
@@ -99,6 +87,19 @@ def start_menu():
             LEVEL_THREE_BUTTON.pressed_event(event)
             if LEVEL_THREE_BUTTON.pressed_event(event) == 3:
                 level_flag = 3
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    game.move(0, -1, True)
+                elif event.key == pygame.K_DOWN:
+                    game.move(0, 1, True)
+                elif event.key == pygame.K_LEFT:
+                    game.move(-1, 0, True)
+                elif event.key == pygame.K_RIGHT:
+                    game.move(1, 0, True)
+                elif event.key == pygame.K_q:
+                    sys.exit(0)
+                elif event.key == pygame.K_d:
+                    game.unmove()
         #отрисовка изменений
         if level_flag == 1:
             screen.blit(LEVEL1_SELECTED, pygame.Rect((545, 330), (130, 110)))
