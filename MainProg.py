@@ -2,7 +2,8 @@ import pygame
 import sys
 import pygame_gui
 import queue
-
+from worker import Game
+from map import Map
 from constants import *
 
 class Button():
@@ -46,9 +47,9 @@ def start_menu():
                           (400, SCREEN_HIGHT - 150), (150, 150), LEVEL2_BUTTON_PRESSED)
     LEVEL_THREE_BUTTON = Button(LEVEL3_BUTTON_IMAGE_DEFAULT, LEVEL3_BUTTON_IMAGE_ACTIVE,
                             (SCREEN_WIDHT - 150, SCREEN_HIGHT - 150), (150, 150), LEVEL3_BUTTON_PRESSED)
-    LEVEL1_SELECTED = pygame.image.load('images/LEVEL1_SELECTED_TEXT.png')
-    LEVEL2_SELECTED = pygame.image.load('images/LEVEL2_SELECTED_TEXT.png')
-    LEVEL3_SELECTED = pygame.image.load('images/LEVEL3_SELECTED_TEXT.png')
+
+    game = Game()
+
     running = True
     level_flag = 1
     while running:
@@ -73,33 +74,13 @@ def start_menu():
             START_BUTTON.pressed_event(event)
             if START_BUTTON.pressed_event(event) == 0:
                 if level_flag == 1:
-                    map = Map(1)
+                    play_level(1)
                 if level_flag == 2:
-                    map = Map(2)
+                    play_level(2)
                 elif level_flag == 3:
-                    map = Map(3)
+                    play_level(3)
             LEVEL_ONE_BUTTON.pressed_event(event)
-            if LEVEL_ONE_BUTTON.pressed_event(event) == 1:
-                level_flag = 1
-            LEVEL_TWO_BUTTON.pressed_event(event)
-            if LEVEL_TWO_BUTTON.pressed_event(event) == 2:
-                level_flag = 2
-            LEVEL_THREE_BUTTON.pressed_event(event)
-            if LEVEL_THREE_BUTTON.pressed_event(event) == 3:
-                level_flag = 3
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    game.move(0, -1, True)
-                elif event.key == pygame.K_DOWN:
-                    game.move(0, 1, True)
-                elif event.key == pygame.K_LEFT:
-                    game.move(-1, 0, True)
-                elif event.key == pygame.K_RIGHT:
-                    game.move(1, 0, True)
-                elif event.key == pygame.K_q:
-                    sys.exit(0)
-                elif event.key == pygame.K_d:
-                    game.unmove()
+
         #отрисовка изменений
         if level_flag == 1:
             screen.blit(LEVEL1_SELECTED, pygame.Rect((545, 330), (130, 110)))
@@ -115,6 +96,71 @@ def start_menu():
         manager.draw_ui(screen)
         pygame.display.update()
 
+def print_game(matrix, screen):
+    screen.fill(background)
+    x = 0
+    y = 0
+    for row in matrix:
+        for char in row:
+            if char == ' ':  # floor
+                screen.blit(FLOOR_IMAGE, (x, y))
+            elif char == '#':  # wall
+                screen.blit(WALL_IMAGE, (x, y))
+            elif char == '@':  # worker on floor
+                screen.blit(WORKER_IMAGE, (x, y))
+            elif char == '.':  # dock
+                screen.blit(DOCK_IMAGE, (x, y))
+            elif char == '*':  # box on dock
+                screen.blit(BOX_ON_DOCK_IMAGE, (x, y))
+            elif char == '$':  # box
+                screen.blit(BOX_IMAGE, (x, y))
+            elif char == '+':  # worker on dock
+                screen.blit(WORKER_ON_DOCK_IMAGE, (x, y))
+            x = x + 32
+        x = 0
+        y = y + 32
+
+def play_level(level):
+    running = True
+    time_delta = clock.tick(60) / 1000
+    while running:
+        map = Map(level, WORKER_IMAGE, FLOOR_IMAGE, DOCK_IMAGE, WALL_IMAGE,
+                  WORKER_ON_DOCK_IMAGE, BOX_ON_DOCK_IMAGE, BOX_IMAGE)
+        if map.is_completed():
+            # отрисовка победного экрана
+            win_screen(screen)
+        print_game(map.get_matrix(), screen)
+        for event in pygame.event.get():
+            manager.process_events(event)
+            if event.type == pygame.QUIT:
+                confrimation_dialog = pygame_gui.windows.UIConfirmationDialog(
+                    rect=pygame.Rect((50, 50), (300, 200)),
+                    manager=manager,
+                    window_title='Выход из игры',
+                    action_long_desc='Вы уверены, что хотите выйти из игры?',
+                    action_short_name='ок',
+                    blocking=True
+                )
+            if event.type == pygame.USEREVENT:
+                if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                    running = False
+                    quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    game.move(0, -1, True)
+                elif event.key == pygame.K_DOWN:
+                    game.move(0, 1, True)
+                elif event.key == pygame.K_LEFT:
+                    game.move(-1, 0, True)
+                elif event.key == pygame.K_RIGHT:
+                    game.move(1, 0, True)
+                elif event.key == pygame.K_q:
+                    sys.exit(0)
+                elif event.key == pygame.K_d:
+                    game.unmove()
+        manager.update(time_delta)
+        manager.draw_ui(screen)
+        pygame.display.update()
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
