@@ -2,8 +2,7 @@ import pygame
 import sys
 import pygame_gui
 import queue
-from worker import Game
-from map import Map
+from game import Game
 from constants import *
 
 class Button():
@@ -96,6 +95,7 @@ def start_menu():
         manager.draw_ui(screen)
         pygame.display.update()
 
+game = Game()
 def win_screen(screen):
     running = True
     while running:
@@ -124,7 +124,6 @@ def win_screen(screen):
         pygame.display.update()
 
 def print_game(matrix, screen):
-    screen.fill(background)
     x = 0
     y = 0
     for row in matrix:
@@ -138,25 +137,23 @@ def print_game(matrix, screen):
             elif char == '.':  # dock
                 screen.blit(DOCK_IMAGE, (x, y))
             elif char == '*':  # box on dock
-                screen.blit(BOX_ON_DOCK_IMAGE, (x, y))
+                screen.blit(BOX_DOCKED_IMAGE, (x, y))
             elif char == '$':  # box
                 screen.blit(BOX_IMAGE, (x, y))
             elif char == '+':  # worker on dock
                 screen.blit(WORKER_ON_DOCK_IMAGE, (x, y))
-            x = x + 32
+            x = x + 50
         x = 0
-        y = y + 32
+        y = y + 50
 
 def play_level(level):
     running = True
     time_delta = clock.tick(60) / 1000
     while running:
-        map = Map(level, WORKER_IMAGE, FLOOR_IMAGE, DOCK_IMAGE, WALL_IMAGE,
-                  WORKER_ON_DOCK_IMAGE, BOX_ON_DOCK_IMAGE, BOX_IMAGE)
-        if map.is_completed():
+        if game.is_completed():
             # отрисовка победного экрана
             win_screen(screen)
-        print_game(map.get_matrix(), screen)
+        print_game(game.get_matrix(), screen)
         for event in pygame.event.get():
             manager.process_events(event)
             if event.type == pygame.QUIT:
@@ -188,6 +185,7 @@ def play_level(level):
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
+
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
