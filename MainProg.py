@@ -5,8 +5,11 @@ import queue
 from game import Game
 from constants import *
 
+#класс создания кнопок, на вход принимаются изображения различных состояний,
+# позиция, размер и номер события когда эта клавиша нажата
 class Button():
     def __init__(self, image, active_image, position, size, pressed):
+        #переобьявление полученных данных
         self.image = image
         self.btn_event = 0
         self.flag = 0
@@ -14,31 +17,36 @@ class Button():
         self.button_images = pygame.Surface(size)
         self._rect = pygame.Rect(position, size)
         self.pressed = pressed
-
+    #метод отрисовки кнопки на экране
     def draw(self, screen):
         if self.btn_event == 0:
             screen.blit(self.image, self._rect)
         elif self.btn_event == 1:
             screen.blit(self.active_image, self._rect)
-
+    #отработка логики нажатия и начала события
     def pressed_event(self, event):
+        #если кнопка нажата
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.flag = 1
-            if event.button == 1: # is left button clicked
-                if self._rect.collidepoint(event.pos): # is mouse over button
+            if event.button == 1:
+                if self._rect.collidepoint(event.pos):
                     self.btn_event = 0
+                    #возвращение номера события при нажатии кнопки
                     return self.pressed
+        #изменение состояния кнопки если мышка на ней но она не нажата
         elif (event.type == pygame.MOUSEBUTTONUP and self._rect.collidepoint(event.pos)) or \
                 (event.type == pygame.MOUSEMOTION and self._rect.collidepoint(event.pos)) and self.flag == 0:
             self.btn_event = 1
+        #сброс значений
         else:
             self.btn_event = 0
             self.flag = 0
-
+#функция выхода из игры
 def quit():
     pygame.quit()
-
+#функция запуска главного меню
 def start_menu():
+    #обьявление стартовой кнопки и кнопки уровней
     START_BUTTON = Button(START_BUTTON_IMAGE_DEFAULT, START_BUTTON_IMAGE_ACTIVE, (300, 200), (160, 70), START_BUTTON_PRESSED)
     LEVEL_ONE_BUTTON = Button(LEVEL1_BUTTON_IMAGE_DEFAULT, LEVEL1_BUTTON_IMAGE_ACTIVE,
                           (530, SCREEN_HIGHT - 260), (150, 150), LEVEL1_BUTTON_PRESSED)
@@ -46,17 +54,17 @@ def start_menu():
                           (400, SCREEN_HIGHT - 150), (150, 150), LEVEL2_BUTTON_PRESSED)
     LEVEL_THREE_BUTTON = Button(LEVEL3_BUTTON_IMAGE_DEFAULT, LEVEL3_BUTTON_IMAGE_ACTIVE,
                             (SCREEN_WIDHT - 150, SCREEN_HIGHT - 150), (150, 150), LEVEL3_BUTTON_PRESSED)
-
-    game = Game()
-
+    #запуск игрового цикла меню
     running = True
     level_flag = 1
     while running:
         time_delta = clock.tick(60) / 1000
+        #заливка экрана изображением
         screen.blit(SCREEN_BACKGROUND_IMAGE, (0, 0))
         #цикл обработки событий
         for event in pygame.event.get():
             manager.process_events(event)
+            #всплывающее окно если игрок захочет выйти
             if event.type == pygame.QUIT:
                 confrimation_dialog = pygame_gui.windows.UIConfirmationDialog(
                     rect=pygame.Rect((50, 50), (300, 200)),
@@ -70,6 +78,7 @@ def start_menu():
                 if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
                     running = False
                     quit()
+            #вызов функции старта уровня с различными данными на вход для запуска различных уровней
             START_BUTTON.pressed_event(event)
             if START_BUTTON.pressed_event(event) == 0:
                 if level_flag == 1:
@@ -91,14 +100,17 @@ def start_menu():
         LEVEL_ONE_BUTTON.draw(screen)
         LEVEL_TWO_BUTTON.draw(screen)
         LEVEL_THREE_BUTTON.draw(screen)
+        #обновление менеджера pygame ui и экрана
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
-
+#обьявление экземпляра класса с логикой уровней
 game = Game()
+#функция отрисовки победного экрана
 def win_screen(screen):
     running = True
     while running:
+        #отрисовка победного экрана с возможностью выхода в главное меню
         HOME_BUTTON = Button(HOME_BUTTON_DEFAULT, HOME_BUTTON_ACTIVE, (300, 200), (200, 100), 123)
         time_delta = clock.tick(60) / 1000
         screen.blit(pygame.Color((1, 200, 233)), (0, 0))
@@ -122,10 +134,11 @@ def win_screen(screen):
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
-
+#функция отрисовки карты уровня
 def print_game(matrix, screen):
     x = 0
     y = 0
+    #проход по матрице из текстового файла и отрисовка клеток по 50 пикселей
     for row in matrix:
         for char in row:
             if char == ' ':  # floor
@@ -145,7 +158,7 @@ def print_game(matrix, screen):
             x = x + 50
         x = 0
         y = y + 50
-
+#функция проигрывания уровня
 def play_level(level):
     running = True
     time_delta = clock.tick(60) / 1000
@@ -153,7 +166,9 @@ def play_level(level):
         if game.is_completed():
             # отрисовка победного экрана
             win_screen(screen)
-        print_game(game.get_matrix(), screen)
+        #использование функции отрисовки уровня
+        print_game(game.get_hell(), screen)
+        #отработка события выхода из игры
         for event in pygame.event.get():
             manager.process_events(event)
             if event.type == pygame.QUIT:
@@ -169,6 +184,7 @@ def play_level(level):
                 if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
                     running = False
                     quit()
+            #принятие нажатых от игрока клавиш для изменения координат коробок и персонажа
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     game.move(0, -1, True)
@@ -182,10 +198,12 @@ def play_level(level):
                     sys.exit(0)
                 elif event.key == pygame.K_d:
                     game.unmove()
+        #обновление менеджера и дисплея
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
 
+#инициализация инструментов pygame, задавание размеров окна и запуск меню
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
