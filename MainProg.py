@@ -96,6 +96,33 @@ def start_menu():
         manager.draw_ui(screen)
         pygame.display.update()
 
+def win_screen(screen):
+    running = True
+    while running:
+        HOME_BUTTON = Button(HOME_BUTTON_DEFAULT, HOME_BUTTON_ACTIVE, (300, 200), (200, 100), 123)
+        time_delta = clock.tick(60) / 1000
+        screen.blit(pygame.Color((1, 200, 233)), (0, 0))
+        #цикл обработки событий
+        for event in pygame.event.get():
+            manager.process_events(event)
+            if event.type == pygame.QUIT:
+                confrimation_dialog = pygame_gui.windows.UIConfirmationDialog(
+                    rect=pygame.Rect((50, 50), (300, 200)),
+                    manager=manager,
+                    window_title='Выход из игры',
+                    action_long_desc='Вы уверены, что хотите выйти из игры?',
+                    action_short_name='ок',
+                    blocking=True
+                )
+            if event.type == pygame.USEREVENT:
+                if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                    running = False
+                    quit()
+            HOME_BUTTON.pressed.event(event)
+        manager.update(time_delta)
+        manager.draw_ui(screen)
+        pygame.display.update()
+
 def print_game(matrix, screen):
     screen.fill(background)
     x = 0

@@ -29,3 +29,7 @@ LEVEL3_BUTTON_IMAGE_ACTIVE = pygame.image.load('images/LEVEL3_BUTTON_IMAGE_ACTIV
 LEVEL1_SELECTED = pygame.image.load('images/LEVEL1_SELECTED_TEXT.png')
 LEVEL2_SELECTED = pygame.image.load('images/LEVEL2_SELECTED_TEXT.png')
 LEVEL3_SELECTED = pygame.image.load('images/LEVEL3_SELECTED_TEXT.png')
+
+#home_button
+HOME_BUTTON_DEFAULT = pygame.image.load('images/HOME_BUTTON_DEFAULT.png')
+HOME_BUTTON_ACTIVE = pygame.image.load('images/HOME_BUTTON_ACTIVE.png')
