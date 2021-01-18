@@ -137,9 +137,11 @@ def win_screen(screen):
                 if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
                     running = False
                     quit()
+            '''
             HOME_BUTTON.pressed.event(event)
             if HOME_BUTTON.pressed_event(event) == 3:
                 start_menu()
+            '''
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
