@@ -4,7 +4,6 @@ import pygame_gui
 import queue
 from game import Game
 from constants import *
-
 #класс создания кнопок, на вход принимаются изображения различных состояний,
 # позиция, размер и номер события когда эта клавиша нажата
 class Button():
@@ -88,6 +87,14 @@ def start_menu():
                 elif level_flag == 3:
                     play_level(3)
             LEVEL_ONE_BUTTON.pressed_event(event)
+            if LEVEL_ONE_BUTTON.pressed_event(event) == 1:
+                level_flag = 1
+            LEVEL_TWO_BUTTON.pressed_event(event)
+            if LEVEL_TWO_BUTTON.pressed_event(event) == 2:
+                level_flag = 2
+            LEVEL_ONE_BUTTON.pressed_event(event)
+            if LEVEL_THREE_BUTTON.pressed_event(event) == 3:
+                level_flag = 3
 
         #отрисовка изменений
         if level_flag == 1:
@@ -105,7 +112,6 @@ def start_menu():
         manager.draw_ui(screen)
         pygame.display.update()
 #обьявление экземпляра класса с логикой уровней
-game = Game()
 #функция отрисовки победного экрана
 def win_screen(screen):
     running = True
@@ -113,7 +119,7 @@ def win_screen(screen):
         #отрисовка победного экрана с возможностью выхода в главное меню
         HOME_BUTTON = Button(HOME_BUTTON_DEFAULT, HOME_BUTTON_ACTIVE, (300, 200), (200, 100), 123)
         time_delta = clock.tick(60) / 1000
-        screen.blit(pygame.Color((1, 200, 233)), (0, 0))
+        screen.blit(screen, pygame.Color((1, 200, 233)))
         #цикл обработки событий
         for event in pygame.event.get():
             manager.process_events(event)
@@ -135,6 +141,7 @@ def win_screen(screen):
         manager.draw_ui(screen)
         pygame.display.update()
 #функция отрисовки карты уровня
+
 def print_game(matrix, screen):
     x = 0
     y = 0
@@ -158,8 +165,10 @@ def print_game(matrix, screen):
             x = x + 50
         x = 0
         y = y + 50
+
 #функция проигрывания уровня
 def play_level(level):
+    game = Game("levels.txt", level)
     running = True
     time_delta = clock.tick(60) / 1000
     while running:
@@ -202,7 +211,6 @@ def play_level(level):
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
-
 #инициализация инструментов pygame, задавание размеров окна и запуск меню
 pygame.init()
 clock = pygame.time.Clock()
