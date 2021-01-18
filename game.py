@@ -4,7 +4,7 @@ import queue
 
 class Game:
     def is_valid_value(self, char):
-        if (char == ' ' or  # floor
+        if (char == ' ' or  # floors
                 char == '#' or  # wall
                 char == '@' or  # ghost on floor
                 char == '.' or  # dock
