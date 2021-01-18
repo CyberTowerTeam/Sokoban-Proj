@@ -47,6 +47,7 @@ def quit():
 #функция запуска главного меню
 def start_menu():
     pygame.init()
+    clock = pygame.time.Clock()
     screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
     screen.blit(SCREEN_BACKGROUND_IMAGE, (800, 450))
     manager = pygame_gui.UIManager((800, 450))
@@ -89,15 +90,12 @@ def start_menu():
                 if level_flag == 1:
                     flag_out = 1
                     quit()
-                    return False
                 if level_flag == 2:
                     flag_out = 1
                     quit()
-                    return False
                 elif level_flag == 3:
                     flag_out = 1
                     quit()
-                    return False
             LEVEL_ONE_BUTTON.pressed_event(event)
             if LEVEL_ONE_BUTTON.pressed_event(event) == 1:
                 level_flag = 1
@@ -107,7 +105,6 @@ def start_menu():
             LEVEL_ONE_BUTTON.pressed_event(event)
             if LEVEL_THREE_BUTTON.pressed_event(event) == 3:
                 level_flag = 3
-
         if flag_out == 1:
             running = False
         #отрисовка изменений
@@ -126,11 +123,13 @@ def start_menu():
         manager.draw_ui(screen)
         pygame.display.update()
     if flag_out == 1:
-        play_level(level_flag)
+        start_menu(level_flag)
 #обьявление экземпляра класса с логикой уровней
 #функция отрисовки победного экрана
+'''
 def win_screen(screen):
     pygame.init()
+    clock = pygame.time.Clock()
     screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
     screen.blit(SCREEN_BACKGROUND_IMAGE, (800, 450))
     manager = pygame_gui.UIManager((800, 450))
@@ -156,14 +155,14 @@ def win_screen(screen):
                 if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
                     running = False
                     quit()
-            '''
+
             HOME_BUTTON.pressed.event(event)
             if HOME_BUTTON.pressed_event(event) == 3:
                 start_menu()
-            '''
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
+'''
 #функция отрисовки карты уровня
 def print_game(matrix, screen):
     x = 0
@@ -192,6 +191,7 @@ def print_game(matrix, screen):
 def play_level(level):
     print(1)
     pygame.init()
+    clock = pygame.time.Clock()
     screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
     manager = pygame_gui.UIManager((800, 450))
     running = True
@@ -199,10 +199,12 @@ def play_level(level):
     print_game(game.get_hell(), screen)
     time_delta = clock.tick(60) / 1000
     while running:
+        '''
         if game.is_completed():
             # отрисовка победного экрана
             win_screen(screen)
             quit()
+        '''
         #использование функции отрисовки уровня
         print_game(game.get_hell(), screen)
         #отработка события выхода из игры
@@ -239,7 +241,5 @@ def play_level(level):
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
-
 #инициализация инструментов pygame, задавание размеров окна и запуск меню
-clock = pygame.time.Clock()
 start_menu()
