@@ -142,7 +142,6 @@ def win_screen(screen):
         manager.draw_ui(screen)
         pygame.display.update()
 #функция отрисовки карты уровня
-'''
 def print_game(matrix, screen):
     x = 0
     y = 0
@@ -166,10 +165,10 @@ def print_game(matrix, screen):
             x = x + 50
         x = 0
         y = y + 50
-'''
 #функция проигрывания уровня
 def play_level(level):
     running = True
+    game = Game('levels.txt', level)
     time_delta = clock.tick(60) / 1000
     while running:
         if game.is_completed():
