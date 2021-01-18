@@ -46,6 +46,10 @@ def quit():
     pygame.quit()
 #функция запуска главного меню
 def start_menu():
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
+    screen.blit(SCREEN_BACKGROUND_IMAGE, (800, 450))
+    manager = pygame_gui.UIManager((800, 450))
     #обьявление стартовой кнопки и кнопки уровней
     START_BUTTON = Button(START_BUTTON_IMAGE_DEFAULT, START_BUTTON_IMAGE_ACTIVE, (300, 200), (160, 70), START_BUTTON_PRESSED)
     LEVEL_ONE_BUTTON = Button(LEVEL1_BUTTON_IMAGE_DEFAULT, LEVEL1_BUTTON_IMAGE_ACTIVE,
@@ -57,6 +61,7 @@ def start_menu():
     #запуск игрового цикла меню
     running = True
     level_flag = 1
+    flag_out = 0
     while running:
         time_delta = clock.tick(60) / 1000
         #заливка экрана изображением
@@ -83,10 +88,17 @@ def start_menu():
             if START_BUTTON.pressed_event(event) == 0:
                 if level_flag == 1:
                     play_level(1)
+                    flag_out = 1
+                    quit()
+
                 if level_flag == 2:
                     play_level(2)
+                    flag_out = 1
+                    quit()
                 elif level_flag == 3:
                     play_level(3)
+                    flag_out = 1
+                    quit()
             LEVEL_ONE_BUTTON.pressed_event(event)
             if LEVEL_ONE_BUTTON.pressed_event(event) == 1:
                 level_flag = 1
@@ -97,6 +109,8 @@ def start_menu():
             if LEVEL_THREE_BUTTON.pressed_event(event) == 3:
                 level_flag = 3
 
+        if flag_out == 1:
+            running = False
         #отрисовка изменений
         if level_flag == 1:
             screen.blit(LEVEL1_SELECTED, pygame.Rect((545, 330), (130, 110)))
@@ -115,6 +129,10 @@ def start_menu():
 #обьявление экземпляра класса с логикой уровней
 #функция отрисовки победного экрана
 def win_screen(screen):
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
+    screen.blit(SCREEN_BACKGROUND_IMAGE, (800, 450))
+    manager = pygame_gui.UIManager((800, 450))
     running = True
     while running:
         #отрисовка победного экрана с возможностью выхода в главное меню
@@ -171,6 +189,11 @@ def print_game(matrix, screen):
         y = y + 50
 #функция проигрывания уровня
 def play_level(level):
+    print(1)
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
+    screen.blit(SCREEN_BACKGROUND_IMAGE, (800, 450))
+    manager = pygame_gui.UIManager((800, 450))
     running = True
     game = Game('levels.txt', level)
     time_delta = clock.tick(60) / 1000
@@ -178,6 +201,7 @@ def play_level(level):
         if game.is_completed():
             # отрисовка победного экрана
             win_screen(screen)
+            quit()
         #использование функции отрисовки уровня
         print_game(game.get_hell(), screen)
         #отработка события выхода из игры
@@ -216,9 +240,5 @@ def play_level(level):
         pygame.display.update()
 
 #инициализация инструментов pygame, задавание размеров окна и запуск меню
-pygame.init()
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
-screen.blit(SCREEN_BACKGROUND_IMAGE, (800, 450))
-manager = pygame_gui.UIManager((800, 450))
 start_menu()
