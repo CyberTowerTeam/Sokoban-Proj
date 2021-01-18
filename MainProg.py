@@ -88,6 +88,14 @@ def start_menu():
                 elif level_flag == 3:
                     play_level(3)
             LEVEL_ONE_BUTTON.pressed_event(event)
+            if LEVEL_ONE_BUTTON.pressed_event(event) == 1:
+                level_flag = 1
+            LEVEL_TWO_BUTTON.pressed_event(event)
+            if LEVEL_TWO_BUTTON.pressed_event(event) == 2:
+                level_flag = 2
+            LEVEL_ONE_BUTTON.pressed_event(event)
+            if LEVEL_THREE_BUTTON.pressed_event(event) == 3:
+                level_flag = 3
 
         #отрисовка изменений
         if level_flag == 1:
@@ -105,7 +113,6 @@ def start_menu():
         manager.draw_ui(screen)
         pygame.display.update()
 #обьявление экземпляра класса с логикой уровней
-game = Game()
 #функция отрисовки победного экрана
 def win_screen(screen):
     running = True
@@ -135,6 +142,7 @@ def win_screen(screen):
         manager.draw_ui(screen)
         pygame.display.update()
 #функция отрисовки карты уровня
+'''
 def print_game(matrix, screen):
     x = 0
     y = 0
@@ -158,6 +166,7 @@ def print_game(matrix, screen):
             x = x + 50
         x = 0
         y = y + 50
+'''
 #функция проигрывания уровня
 def play_level(level):
     running = True
