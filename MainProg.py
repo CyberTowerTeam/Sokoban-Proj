@@ -118,7 +118,7 @@ def win_screen(screen):
     running = True
     while running:
         #отрисовка победного экрана с возможностью выхода в главное меню
-        HOME_BUTTON = Button(HOME_BUTTON_DEFAULT, HOME_BUTTON_ACTIVE, (300, 200), (200, 100), 123)
+        HOME_BUTTON = Button(HOME_BUTTON_DEFAULT, HOME_BUTTON_ACTIVE, (300, 200), (200, 100), HOME_BUTTON_PRESSED)
         time_delta = clock.tick(60) / 1000
         screen.blit(screen, pygame.Color((1, 200, 233)))
         #цикл обработки событий
