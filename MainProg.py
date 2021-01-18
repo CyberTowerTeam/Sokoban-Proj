@@ -120,7 +120,7 @@ def win_screen(screen):
         #отрисовка победного экрана с возможностью выхода в главное меню
         HOME_BUTTON = Button(HOME_BUTTON_DEFAULT, HOME_BUTTON_ACTIVE, (300, 200), (200, 100), 123)
         time_delta = clock.tick(60) / 1000
-        screen.blit(pygame.Color((1, 200, 233)), (0, 0))
+        screen.blit(screen, pygame.Color((1, 200, 233)))
         #цикл обработки событий
         for event in pygame.event.get():
             manager.process_events(event)
@@ -138,6 +138,8 @@ def win_screen(screen):
                     running = False
                     quit()
             HOME_BUTTON.pressed.event(event)
+            if HOME_BUTTON.pressed_event(event) == 3:
+                start_menu()
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
