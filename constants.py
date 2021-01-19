@@ -25,3 +25,21 @@ LEVEL2_BUTTON_IMAGE_ACTIVE = pygame.image.load('images/LEVEL2_BUTTON_IMAGE_ACTIV
 LEVEL3_BUTTON_PRESSED = 3
 LEVEL3_BUTTON_IMAGE_DEFAULT = pygame.image.load('images/LEVEL3_BUTTON_IMAGE_DEFAULT.png')
 LEVEL3_BUTTON_IMAGE_ACTIVE = pygame.image.load('images/LEVEL3_BUTTON_IMAGE_ACTIVE.png')
+
+LEVEL1_SELECTED = pygame.image.load('images/LEVEL1_SELECTED_TEXT.png')
+LEVEL2_SELECTED = pygame.image.load('images/LEVEL2_SELECTED_TEXT.png')
+LEVEL3_SELECTED = pygame.image.load('images/LEVEL3_SELECTED_TEXT.png')
+
+#home_button
+HOME_BUTTON_DEFAULT = pygame.image.load('images/HOME_BUTTON_DEFAULT.png')
+HOME_BUTTON_ACTIVE = pygame.image.load('images/HOME_BUTTON_ACTIVE.png')
+HOME_BUTTON_PRESSED = 123
+#game_image
+FLOOR_IMAGE = pygame.image.load('images/FLOOR_IMAGE.png')
+DOCK_IMAGE = pygame.image.load('images/DOCK_IMAGE.png')
+BOX_IMAGE = pygame.image.load('images/BOX_IMAGE.png')
+BOX_DOCKED_IMAGE = pygame.image.load('images/BOX_DOCKED_IMAGE.png')
+WALL_IMAGE = pygame.image.load('images/WALL_IMAGE.png')
+WORKER_ON_DOCK = pygame.image.load('images/WORKER_ON_DOCK_IMAGE.png')
+WORKER_ON_DOCK_IMAGE = pygame.image.load('images/WORKER_ON_DOCK_IMAGE.png')
+WORKER_IMAGE = pygame.image.load('images/WORKER_IMAGE.png')
