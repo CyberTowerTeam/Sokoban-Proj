@@ -1,7 +1,6 @@
 import sys
 import queue
 
-
 class Game:
     def is_valid_value(self, char):
         if (char == ' ' or  # floor
@@ -16,39 +15,34 @@ class Game:
             return False
 
     def __init__(self, filename, level):
-        self.queue = queue.LifoQueue() # очередь хранящая список наших действий в хронологическом порядке
+        self.queue = queue.LifoQueue()  # очередь хранящая список наших действий в хронологическом порядке
         self.hell = [] #создаём поле
-        #Проверка корректности введённого уровня
-        if level < 1:
-            print("Ошибка: уровень" + str(level) + "не существует")
-            sys.exit(1)
-        else:
-            #открытие файла с уровнями
-            file = open(filename, 'r')
-            level_found = False
-            #цикл прохождения по файлу
-            for line in file:
-                if not level_found:
-                    #если название введенного уровня совпадает с текущей строкой-итератором, то переходить к считыванию уровня
-                    if "Level " + str(level) == line.strip():
-                        level_found = True
+        #открытие файла с уровнями
+        file = open(filename, 'r')
+        level_found = False
+        #цикл прохождения по файлу
+        for line in file:
+            if not level_found:
+                #если название введенного уровня совпадает с текущей строкой-итератором, то переходить к считыванию уровня
+                if "Level " + str(level) == line.strip():
+                    level_found = True
+            else:
+                if line.strip() != "":
+                    row = []
+                    for c in line:
+                        if c != '\n' and self.is_valid_value(c):
+                            row.append(c)
+                        elif c == '\n':  # jump to next row when newline
+                            continue
+                        else:
+                            print("ERROR: Level " + str(level) + " has invalid value " + c)
+                            sys.exit(1)
+                    self.hell.append(row)
                 else:
-                    if line.strip() != "":
-                        row = []
-                        for c in line:
-                            if c != '\n' and self.is_valid_value(c):
-                                row.append(c)
-                            elif c == '\n':
-                                continue
-                            else:
-                                print("Ошибка: уровень" + str(level) + "не существует" + c)
-                                sys.exit(1)
-                        self.hell.append(row)
-                    else:
-                        break
+                    break
 
     def load_size(self):
-        #задаём размеры экрана относительно размеров игрового поля
+        # задаём размеры экрана относительно размеров игрового поля
         x = 0
         y = len(self.hell)
         for row in self.hell:
@@ -57,11 +51,11 @@ class Game:
         return (x * 50, y * 50) #умножаем на сторону одного элемента в пикселях
 
     def get_hell(self):
-        #задаём поле
+        # задаём поле
         return self.hell
 
     def print_hell(self):
-        #вывод поля
+        # вывод поля
         for row in self.hell:
             for char in row:
                 sys.stdout.write(char)
@@ -69,18 +63,18 @@ class Game:
             sys.stdout.write('\n')
 
     def get_content(self, x, y):
-        #изменяем текущую координату на новую
+        # изменяем текущую координату на новую
         return self.hell[y][x]
 
     def set_content(self, x, y, content):
-        #добавляем элементы в наше поле, проевряя, чтобы они были в списке допустимых символов
+        # добавляем элементы в наше поле, проевряя, чтобы они были в списке допустимых символов
         if self.is_valid_value(content):
             self.hell[y][x] = content
         else:
-            print("Ошибка: символ'" + content + "'не может быть добавлен")
+            print("ERROR: Value '" + content + "' to be added is not valid")
 
     def ghost(self):
-        #изменение координаты персонажа
+        # изменение координаты персонажа
         x = 0
         y = 0
         for row in self.hell:
@@ -93,19 +87,19 @@ class Game:
             x = 0
 
     def can_move(self, x, y):
-        #проверяем, есть ли у персонажа возможность двигаться. Т.е. следующий элемент не стена или дьяволёнок в любом из его положений
+        # проверяем, есть ли у персонажа возможность двигаться. Т.е. следующий элемент не стена или дьяволёнок в любом из его положений
         return self.get_content(self.ghost()[0] + x, self.ghost()[1] + y) not in ['#', '*', '$']
 
     def next(self, x, y):
-        #получаем текущее положение нашего персонажа и к соответсвующим координатам прибавляем изменённые х и у
+        # получаем текущее положение нашего персонажа и к соответсвующим координатам прибавляем изменённые х и у
         return self.get_content(self.ghost()[0] + x, self.ghost()[1] + y)
 
     def can_push(self, x, y):
-        #проверяем, возможно ли движение
+        # проверяем, возможно ли движение
         return (self.next(x, y) in ['*', '$'] and self.next(x + x, y + y) in [' ', '.'])
 
     def is_completed(self):
-        #проверяем, что все дьяволята поставлены на требуемую позицию
+        # проверяем, что все дьяволята поставлены на требуемую позицию
         for row in self.hell:
             for cell in row:
                 if cell == '$':
@@ -113,10 +107,10 @@ class Game:
         return True
 
     def move_box(self, x, y, a, b):
-        #(x,y) - положение персонажа
-        #(a,b) - положение коробки
-        current_box = self.get_content(x, y) #положение коробки
-        future_box = self.get_content(x + a, y + b) #положение коробки после изменения
+        # (x,y) - положение персонажа
+        # (a,b) - положение коробки
+        current_box = self.get_content(x, y)  # положение коробки
+        future_box = self.get_content(x + a, y + b)  # положение коробки после изменения
         if current_box == '$' and future_box == ' ':
             self.set_content(x + a, y + b, '$')
             self.set_content(x, y, ' ')
@@ -131,7 +125,7 @@ class Game:
             self.set_content(x, y, '.')
 
     def unmove(self):
-        #отмена последнего дейсвия при помощи перемещения в очереди
+        # отмена последнего дейсвия при помощи перемещения в очереди
         if not self.queue.empty():
             movement = self.queue.get()
             if movement[2]:
@@ -143,24 +137,24 @@ class Game:
 
     def move(self, x, y, save):
         if self.can_move(x, y):
-            current = self.ghost() #переменная, хранящая координаты персонажа и его положение на доске
-            future = self.next(x, y) #переменная, хранящая следующее, изменённое, положение персонажа
-            if current[2] == '@' and future == ' ': #если призрак на полу и  следующая клетка пол
+            current = self.ghost()  # переменная, хранящая координаты персонажа и его положение на доске
+            future = self.next(x, y)  # переменная, хранящая следующее, изменённое, положение персонажа
+            if current[2] == '@' and future == ' ':
                 self.set_content(current[0] + x, current[1] + y, '@')
                 self.set_content(current[0], current[1], ' ')
                 if save:
                     self.queue.put((x, y, False))
-            elif current[2] == '@' and future == '.': #если призрак на полу и следующая клетка пол
+            elif current[2] == '@' and future == '.':
                 self.set_content(current[0] + x, current[1] + y, '+')
                 self.set_content(current[0], current[1], ' ')
                 if save:
                     self.queue.put((x, y, False))
-            elif current[2] == '+' and future == ' ': #если призрак на доске и следующая клетка пол
+            elif current[2] == '+' and future == ' ':
                 self.set_content(current[0] + x, current[1] + y, '@')
                 self.set_content(current[0], current[1], '.')
                 if save:
                     self.queue.put((x, y, False))
-            elif current[2] == '+' and future == '.': #если призрак на доске и следующая клетка пол
+            elif current[2] == '+' and future == '.':
                 self.set_content(current[0] + x, current[1] + y, '+')
                 self.set_content(current[0], current[1], '.')
                 if save:

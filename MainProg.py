@@ -5,6 +5,12 @@ import queue
 from game import Game
 from constants import *
 
+
+pygame.init()
+pygame.mixer.music.load('fon.ogg')
+pygame.mixer.music.play()
+
+
 #класс создания кнопок, на вход принимаются изображения различных состояний,
 # позиция, размер и номер события когда эта клавиша нажата
 class Button():
@@ -17,12 +23,14 @@ class Button():
         self.button_images = pygame.Surface(size)
         self._rect = pygame.Rect(position, size)
         self.pressed = pressed
+
     #метод отрисовки кнопки на экране
     def draw(self, screen):
         if self.btn_event == 0:
             screen.blit(self.image, self._rect)
         elif self.btn_event == 1:
             screen.blit(self.active_image, self._rect)
+
     #отработка логики нажатия и начала события
     def pressed_event(self, event):
         #если кнопка нажата
@@ -41,9 +49,13 @@ class Button():
         else:
             self.btn_event = 0
             self.flag = 0
+
+
 #функция выхода из игры
 def quit():
     pygame.quit()
+
+
 #функция запуска главного меню
 def start_menu():
     pygame.init()
@@ -89,13 +101,13 @@ def start_menu():
             if START_BUTTON.pressed_event(event) == 0:
                 if level_flag == 1:
                     flag_out = 1
-                    quit()
+                    return level_flag
                 if level_flag == 2:
                     flag_out = 1
-                    quit()
+                    return level_flag
                 elif level_flag == 3:
                     flag_out = 1
-                    quit()
+                    return level_flag
             LEVEL_ONE_BUTTON.pressed_event(event)
             if LEVEL_ONE_BUTTON.pressed_event(event) == 1:
                 level_flag = 1
@@ -122,23 +134,21 @@ def start_menu():
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
-    if flag_out == 1:
-        start_menu(level_flag)
+
 #обьявление экземпляра класса с логикой уровней
 #функция отрисовки победного экрана
-'''
-def win_screen(screen):
+def win_screen():
+    print(2)
     pygame.init()
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
-    screen.blit(SCREEN_BACKGROUND_IMAGE, (800, 450))
     manager = pygame_gui.UIManager((800, 450))
+    screen.fill(pygame.Color((1, 200, 233)))
     running = True
     while running:
         #отрисовка победного экрана с возможностью выхода в главное меню
         HOME_BUTTON = Button(HOME_BUTTON_DEFAULT, HOME_BUTTON_ACTIVE, (300, 200), (200, 100), HOME_BUTTON_PRESSED)
         time_delta = clock.tick(60) / 1000
-        screen.blit(screen, pygame.Color((1, 200, 233)))
         #цикл обработки событий
         for event in pygame.event.get():
             manager.process_events(event)
@@ -155,26 +165,26 @@ def win_screen(screen):
                 if event.user_type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
                     running = False
                     quit()
-
-            HOME_BUTTON.pressed.event(event)
-            if HOME_BUTTON.pressed_event(event) == 3:
-                start_menu()
+            HOME_BUTTON.pressed_event(event)
+            if HOME_BUTTON.pressed_event(event) == 123:
+                return 123
+        HOME_BUTTON.draw(screen)
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
-'''
 #функция отрисовки карты уровня
-def print_game(matrix, screen):
+
+def print_game(hell, screen):
     x = 0
     y = 0
     #проход по матрице из текстового файла и отрисовка клеток по 50 пикселей
-    for row in matrix:
+    for row in hell:
         for char in row:
             if char == ' ':  # floor
                 screen.blit(FLOOR_IMAGE, (x, y))
             elif char == '#':  # wall
                 screen.blit(WALL_IMAGE, (x, y))
-            elif char == '@':  # worker on floor
+            elif char == '@':  # ghost on floor
                 screen.blit(WORKER_IMAGE, (x, y))
             elif char == '.':  # dock
                 screen.blit(DOCK_IMAGE, (x, y))
@@ -182,11 +192,12 @@ def print_game(matrix, screen):
                 screen.blit(BOX_DOCKED_IMAGE, (x, y))
             elif char == '$':  # box
                 screen.blit(BOX_IMAGE, (x, y))
-            elif char == '+':  # worker on dock
+            elif char == '+':  # ghost on dock
                 screen.blit(WORKER_ON_DOCK_IMAGE, (x, y))
             x = x + 50
         x = 0
         y = y + 50
+
 #функция проигрывания уровня
 def play_level(level):
     print(1)
@@ -196,15 +207,10 @@ def play_level(level):
     manager = pygame_gui.UIManager((800, 450))
     running = True
     game = Game('levels.txt', level)
-    print_game(game.get_hell(), screen)
     time_delta = clock.tick(60) / 1000
     while running:
-        '''
         if game.is_completed():
-            # отрисовка победного экрана
-            win_screen(screen)
-            quit()
-        '''
+            return 666
         #использование функции отрисовки уровня
         print_game(game.get_hell(), screen)
         #отработка события выхода из игры
@@ -233,13 +239,20 @@ def play_level(level):
                     game.move(-1, 0, True)
                 elif event.key == pygame.K_RIGHT:
                     game.move(1, 0, True)
-                elif event.key == pygame.K_q:
-                    sys.exit(0)
-                elif event.key == pygame.K_d:
+                elif event.key == pygame.K_b:
                     game.unmove()
         #обновление менеджера и дисплея
         manager.update(time_delta)
         manager.draw_ui(screen)
         pygame.display.update()
+
+
 #инициализация инструментов pygame, задавание размеров окна и запуск меню
-start_menu()
+if __name__ == '__main__':
+    while True:
+        x = start_menu()
+        y = play_level(x)
+        if y == 666:
+            z = win_screen()
+            if z == 123:
+                continue
