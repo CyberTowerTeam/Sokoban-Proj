@@ -4,6 +4,7 @@ import pygame_gui
 import queue
 from game import Game
 from constants import *
+from random import choice
 
 
 pygame.init()
@@ -144,6 +145,10 @@ def win_screen():
     screen = pygame.display.set_mode((SCREEN_WIDHT, SCREEN_HIGHT))
     manager = pygame_gui.UIManager((800, 450))
     screen.fill(pygame.Color((1, 200, 233)))
+    font = pygame.font.Font(None, 100)
+    text = font.render(choice(['МОЛОДЕЦ!', 'ОТЛИЧНО!', 'ТАК ДЕРЖАТЬ!', 'НЕПЛОХО!',
+                               'НЕВЕРОЯТНО!']), True, (255, 255, 255))
+    screen.blit(text, (225, 50))
     running = True
     while running:
         #отрисовка победного экрана с возможностью выхода в главное меню
