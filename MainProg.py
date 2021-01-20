@@ -8,7 +8,7 @@ from constants import *
 
 pygame.init()
 pygame.mixer.music.load('fon.ogg')
-pygame.mixer.music.play()
+pygame.mixer.music.play(loops = -1)
 
 
 #класс создания кнопок, на вход принимаются изображения различных состояний,
